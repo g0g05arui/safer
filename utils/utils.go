@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"safer.com/m/internal/env"
+	"time"
 
 	//	"encoding/json"
 //	"fmt"
@@ -24,6 +25,7 @@ func GenerateJWT(user User) (string, error) {
 		"email": user.Email,
 		"id":user.Id,
 		"role":user.Role,
+		"expires": time.Now().Local().Add(time.Hour * time.Duration(24*5)),
 	})
 	tokenString, err := token.SignedString([]byte(string(env.Cfg["SECRET_KEY"])))
 	if err != nil {
