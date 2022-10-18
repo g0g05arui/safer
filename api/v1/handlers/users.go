@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-chi/chi/v5"
+	"github.com/golang-jwt/jwt"
 	"gopkg.in/validator.v2"
 	"net/http"
 	"safer.com/m/internal/env"
@@ -80,13 +80,29 @@ func TestAuth(w http.ResponseWriter,r *http.Request){
 	json.NewEncoder(w).Encode(map[string]interface{}{"ok":"ok"})
 }
 
+func ChangeUserInformation(w http.ResponseWriter, r *http.Request){
+	var user User
+	json.NewDecoder(r.Body).Decode(&user)
+	authToken := strings.Split(r.Header.Get("Authorization"), "Bearer ")[1]
+	claims := jwt.MapClaims{}
+	_,err:=jwt.ParseWithClaims(authToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(env.Cfg["SECRET_KEY"]), nil
+	})
 
-func Routes() *chi.Mux {
-	r := chi.NewRouter()
-	r.Post("/users", CreateUser(Client))
-	r.Post("/login",AuthUser)
-	r.Post("/test-role-authorization",AuthMiddleWare([]string{"client","admin"},TestAuth))
-	r.Post("/users/admin",CreateAdmin)
-	r.Post("/users/volunteer",AuthMiddleWare([]string{"admin"},CreateUser(Volunteer)))
-	return r
+	if err!=nil{
+		return
+	}
+	id:=claims["id"].(string)
+	user.Id=id
+	user.Role=UserType(claims["role"].(string))
+	user,newToken,err:=services.UpdateUserInfo(user)
+	if err!=nil{
+		json.NewEncoder(w).Encode(HttpError{Message: err.Error()})
+
+	}else{
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"token":newToken,
+			"user":user,
+		})
+	}
 }

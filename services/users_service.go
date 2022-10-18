@@ -35,3 +35,17 @@ func GetUserBasicAuth(email,password string) (User,error){
 	}
 	return User{}, errors.New("User not found")
 }
+
+func UpdateUserInfo(user User) (User,string,error){
+
+	_,err:=db.Exec("UPDATE users SET Email=?,FirstName=?,LastName=?,Phone=? WHERE Id=?",user.Email,user.FirstName,user.LastName,user.Phone,user.Id)
+	if err!=nil{
+		return User{}, "", err
+	}else{
+		if token,err:=utils.GenerateJWT(user);err!=nil{
+			return User{}, "", err
+		}else{
+			return user,token,nil
+		}
+	}
+}
