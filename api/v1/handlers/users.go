@@ -27,6 +27,7 @@ func CreateUser(userType UserType) http.HandlerFunc{
 				w.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(w).Encode(HttpError{Message: err.Error()})
 			}else{
+				user.Password=""
 				json.NewEncoder(w).Encode(user)
 			}
 		}
@@ -51,6 +52,7 @@ func CreateAdmin(w http.ResponseWriter,r *http.Request){
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(HttpError{Message: err.Error()})
 		}else{
+			user.Password=""
 			json.NewEncoder(w).Encode(user)
 		}
 	}
@@ -71,13 +73,13 @@ func AuthUser(w http.ResponseWriter, r *http.Request){
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(HttpError{Message: err.Error()})
 		}else{
-			json.NewEncoder(w).Encode(map[string]interface{}{"token":token})
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{"token": token})
 		}
 	}
 }
 
 func TestAuth(w http.ResponseWriter,r *http.Request){
-	json.NewEncoder(w).Encode(map[string]interface{}{"ok":"ok"})
+	json.NewEncoder(w).Encode(map[string]interface{}{"ok": "ok"})
 }
 
 func ChangeUserInformation(w http.ResponseWriter, r *http.Request){
@@ -100,6 +102,7 @@ func ChangeUserInformation(w http.ResponseWriter, r *http.Request){
 		json.NewEncoder(w).Encode(HttpError{Message: err.Error()})
 
 	}else{
+		user.Password=""
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"token":newToken,
 			"user":user,

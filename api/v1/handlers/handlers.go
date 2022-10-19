@@ -12,7 +12,7 @@ func Routes() *chi.Mux {
 	r.Post("/users/volunteer",AuthMiddleWare([]string{"admin"},CreateUser(Volunteer)))
 	r.Put("/users",AuthMiddleWare([]string{"client","admin","volunteer"},ChangeUserInformation))
 
-	r.Post("/cases",AuthMiddleWare([]string{"volunteer"},ChangeUserInformation))
+	r.Post("/cases",AuthMiddleWare([]string{"client"},CreateCase))
 
 	return r
 }
