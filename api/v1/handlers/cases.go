@@ -58,7 +58,7 @@ func GetMyCases(w http.ResponseWriter,r *http.Request){
 		return
 	}
 
-	if cases, err :=services.GetCasesByAssigneeId(claims["id"].(string));err!=nil{
+	if cases, err :=services.GetCasesById(claims["id"].(string));err!=nil{
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(HttpError{Message: err.Error()})
 	}else{

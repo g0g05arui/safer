@@ -17,8 +17,8 @@ func AddCaseToDataBase(_case Case) (Case,error) {
 	}
 }
 
-func GetCasesByAssigneeId(assigneeId string) ([]Case,error){
-	data,err:=db.Query("SELECT Id,AssigneeId,ReporterId,Status FROM cases WHERE AssigneeId=?",assigneeId)
+func GetCasesById(assigneeId string) ([]Case,error){
+	data,err:=db.Query("SELECT Id,AssigneeId,ReporterId,Status FROM cases WHERE AssigneeId=? OR ReporterId=?",assigneeId,assigneeId)
 	if err!=nil{
 		return []Case{}, err
 	}
