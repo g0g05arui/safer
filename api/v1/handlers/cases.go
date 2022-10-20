@@ -49,5 +49,19 @@ func GetAllCases(w http.ResponseWriter,r *http.Request){
 }
 
 func GetMyCases(w http.ResponseWriter,r *http.Request){
+	authToken := strings.Split(r.Header.Get("Authorization"), "Bearer ")[1]
+	claims := jwt.MapClaims{}
+	_,err:=jwt.ParseWithClaims(authToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(env.Cfg["SECRET_KEY"]), nil
+	})
+	if err!=nil{
+		return
+	}
 
+	if cases, err :=services.GetCasesByAssigneeId(claims["id"].(string));err!=nil{
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(HttpError{Message: err.Error()})
+	}else{
+		json.NewEncoder(w).Encode(cases)
+	}
 }

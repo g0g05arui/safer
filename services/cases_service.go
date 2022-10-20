@@ -38,3 +38,18 @@ func AssignCaseToVolunteer(caseId string,assigneeId sql.NullString) error{
 	}
 	return nil
 }
+
+
+func GetCases()[]Case{
+	data,err:=db.Query("SELECT Id,AssigneeId,ReporterId,Status FROM cases")
+	if err!=nil{
+		return []Case{}
+	}
+	var _case Case
+	cases:=[]Case{}
+	for data.Next(){
+		data.Scan(&_case.Id,&_case.AssigneeId,&_case.ReporterId,&_case.Status)
+		cases=append(cases,_case)
+	}
+	return cases
+}
