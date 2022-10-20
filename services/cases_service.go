@@ -31,8 +31,7 @@ func GetCasesByAssigneeId(assigneeId string) ([]Case,error){
 }
 
 func AssignCaseToVolunteer(caseId,assigneeId string) error{
-	_,err:=db.Exec("UPDATE users SET AssigneeId=? WHERE Id=?",assigneeId,caseId)
-
+	_,err:=db.Exec("UPDATE cases SET AssigneeId=? WHERE Id=?",assigneeId,caseId)
 	if err!=nil{
 		return err
 	}

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi/v5"
 	"github.com/golang-jwt/jwt"
 	"net/http"
 	"safer.com/m/internal/env"
@@ -27,5 +28,26 @@ func CreateCase(w http.ResponseWriter,r *http.Request){
 	}else{
 		json.NewEncoder(w).Encode(_case)
 	}
+
+}
+
+func AssignCase(w http.ResponseWriter,r* http.Request){
+	var _case Case
+	id:=chi.URLParam(r,"id")
+	json.NewDecoder(r.Body).Decode(&_case)
+
+	if err:=services.AssignCaseToVolunteer(id,_case.AssigneeId);err!=nil{
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(HttpError{Message: err.Error()})
+	}else{
+		json.NewEncoder(w).Encode(map[string]interface{}{"message":"case updated succesfully"})
+	}
+}
+
+func GetAllCases(w http.ResponseWriter,r *http.Request){
+
+}
+
+func GetMyCases(w http.ResponseWriter,r *http.Request){
 
 }
