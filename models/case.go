@@ -1,5 +1,7 @@
 package models
 
+import "database/sql"
+
 type CaseStatus string
 
 const (
@@ -11,7 +13,7 @@ const (
 
 type Case struct{
 	Id 			string	   `json:"id"`
-	AssigneeId  string     `json:"assigneeId"`
+	AssigneeId  sql.NullString     `json:"assigneeId"`
 	ReporterId  string	   `json:"reporterId"`
 	Status 		CaseStatus `json:"status"`
 }

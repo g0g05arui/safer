@@ -21,7 +21,6 @@ func CreateCase(w http.ResponseWriter,r *http.Request){
 		return
 	}
 	_case.ReporterId=claims["id"].(string)
-	_case.AssigneeId="";
 	if _case, err := services.AddCaseToDataBase(_case); err!=nil{
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(HttpError{Message: err.Error()})
@@ -45,7 +44,8 @@ func AssignCase(w http.ResponseWriter,r* http.Request){
 }
 
 func GetAllCases(w http.ResponseWriter,r *http.Request){
-
+	cases:=services.GetCases()
+	json.NewEncoder(w).Encode(cases)
 }
 
 func GetMyCases(w http.ResponseWriter,r *http.Request){

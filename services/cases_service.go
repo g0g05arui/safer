@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	. "safer.com/m/models"
 	"github.com/google/uuid"
 )
@@ -30,7 +31,7 @@ func GetCasesByAssigneeId(assigneeId string) ([]Case,error){
 	return cases,nil
 }
 
-func AssignCaseToVolunteer(caseId,assigneeId string) error{
+func AssignCaseToVolunteer(caseId string,assigneeId sql.NullString) error{
 	_,err:=db.Exec("UPDATE cases SET AssigneeId=? WHERE Id=?",assigneeId,caseId)
 	if err!=nil{
 		return err
