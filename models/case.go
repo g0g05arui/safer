@@ -12,8 +12,8 @@ const (
 
 
 type Case struct{
-	Id 			string	   `json:"id"`
+	Id 			string	           `json:"id"`
 	AssigneeId  sql.NullString     `json:"assigneeId"`
-	ReporterId  string	   `json:"reporterId"`
-	Status 		CaseStatus `json:"status"`
+	ReporterId  string	           `json:"reporterId"`
+	Status 		CaseStatus         `json:"status"`
 }
