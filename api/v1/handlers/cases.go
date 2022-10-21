@@ -5,21 +5,13 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/golang-jwt/jwt"
 	"net/http"
-	"safer.com/m/internal/env"
 	. "safer.com/m/models"
 	"safer.com/m/services"
-	"strings"
+
 )
 func CreateCase(w http.ResponseWriter,r *http.Request){
 	var _case Case
-	authToken := strings.Split(r.Header.Get("Authorization"), "Bearer ")[1]
-	claims := jwt.MapClaims{}
-	_,err:=jwt.ParseWithClaims(authToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(env.Cfg["SECRET_KEY"]), nil
-	})
-	if err!=nil{
-		return
-	}
+	claims:=r.Context().Value("user").(jwt.MapClaims)
 	_case.ReporterId=claims["id"].(string)
 	if _case, err := services.AddCaseToDataBase(_case); err!=nil{
 		w.WriteHeader(http.StatusBadRequest)
@@ -49,14 +41,7 @@ func GetAllCases(w http.ResponseWriter,r *http.Request){
 }
 
 func GetMyCases(w http.ResponseWriter,r *http.Request){
-	authToken := strings.Split(r.Header.Get("Authorization"), "Bearer ")[1]
-	claims := jwt.MapClaims{}
-	_,err:=jwt.ParseWithClaims(authToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(env.Cfg["SECRET_KEY"]), nil
-	})
-	if err!=nil{
-		return
-	}
+	claims:=r.Context().Value("user").(jwt.MapClaims)
 
 	if cases, err :=services.GetCasesById(claims["id"].(string));err!=nil{
 		w.WriteHeader(http.StatusInternalServerError)

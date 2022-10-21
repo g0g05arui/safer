@@ -85,15 +85,7 @@ func TestAuth(w http.ResponseWriter,r *http.Request){
 func ChangeUserInformation(w http.ResponseWriter, r *http.Request){
 	var user User
 	json.NewDecoder(r.Body).Decode(&user)
-	authToken := strings.Split(r.Header.Get("Authorization"), "Bearer ")[1]
-	claims := jwt.MapClaims{}
-	_,err:=jwt.ParseWithClaims(authToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(env.Cfg["SECRET_KEY"]), nil
-	})
-
-	if err!=nil{
-		return
-	}
+	claims:=r.Context().Value("user").(jwt.MapClaims)
 	id:=claims["id"].(string)
 	user.Id=id
 	user.Role=UserType(claims["role"].(string))

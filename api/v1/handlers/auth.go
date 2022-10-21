@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"github.com/golang-jwt/jwt"
@@ -39,7 +40,12 @@ func AuthMiddleWare(roles []string,next http.HandlerFunc) http.HandlerFunc{
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(HttpError{Message: "access denied"})
 		}else{
-			next(w,r)
+			claims := jwt.MapClaims{}
+			jwt.ParseWithClaims(authToken, claims, func(token *jwt.Token) (interface{}, error) {
+				return []byte(env.Cfg["SECRET_KEY"]), nil
+			})
+			ctx := context.WithValue(r.Context(), "user",claims)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 	}
 }
