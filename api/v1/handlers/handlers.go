@@ -1,20 +1,32 @@
 package handlers
 
-import "github.com/go-chi/chi/v5"
+import (
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"time"
+)
 import . "safer.com/m/models"
 func Routes() *chi.Mux {
 	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.Timeout(5 * time.Second))
+	r.Route("/users", func(rx chi.Router) {
+		rx.Post("/", CreateUser(Client))
+		rx.Post("/admin",CreateAdmin)
+		rx.Post("/volunteer",AuthMiddleWare([]string{"admin"},CreateUser(Volunteer)))
+		rx.Put("/",AuthMiddleWare([]string{"client","admin","volunteer"},ChangeUserInformation))
+	})
 
-	r.Post("/users", CreateUser(Client))
+	r.Route("/cases", func(rx chi.Router) {
+		rx.Post("/",AuthMiddleWare([]string{"client"},CreateCase))
+		rx.Get("/",AuthMiddleWare([]string{"admin"},GetAllCases))
+		rx.Post("/{id}/assign",AuthMiddleWare([]string{"admin"},AssignCase))
+	})
+	r.Get("/my-cases",AuthMiddleWare([]string{"volunteer","client"},GetMyCases))
 	r.Post("/login",AuthUser)
 	r.Post("/test-role-authorization",AuthMiddleWare([]string{"client","admin"},TestAuth))
-	r.Post("/users/admin",CreateAdmin)
-	r.Post("/users/volunteer",AuthMiddleWare([]string{"admin"},CreateUser(Volunteer)))
-	r.Put("/users",AuthMiddleWare([]string{"client","admin","volunteer"},ChangeUserInformation))
-
-	r.Post("/cases",AuthMiddleWare([]string{"client"},CreateCase))
-	r.Post("/cases/{id}/assign",AuthMiddleWare([]string{"admin"},AssignCase))
-	r.Get("/my-cases",AuthMiddleWare([]string{"volunteer","client"},GetMyCases))
-	r.Get("/cases",AuthMiddleWare([]string{"admin"},GetAllCases))
 	return r
 }
