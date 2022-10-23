@@ -34,6 +34,7 @@ CREATE TABLE messages(
 	CaseId varchar(255),
 	Message varchar(1024),
 	Data varchar(1024),
+	CreatedAt DATETIME,
 	PRIMARY KEY (Id),
 	FOREIGN KEY (SenderId) REFERENCES  users(Id),
 	FOREIGN KEY (CaseId) REFERENCES  cases(Id)
@@ -53,7 +54,7 @@ SECRET_KEY=Your secret key
     "assigneeId":{
         "String":"0eb9055b-ff08-49b7-8a29-c7259fbcc767",
         "Valid":true
-        }
+     }
 }
 ```
 
