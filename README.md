@@ -46,6 +46,17 @@ PORT=:8080
 SECRET_KEY=Your secret key
 ```
 
+## API usage: sql.NullString should be used like this
+
+```
+{
+    "assigneeId":{
+        "String":"0eb9055b-ff08-49b7-8a29-c7259fbcc767",
+        "Valid":true
+        }
+}
+```
+
 ## Install all packages and then to start the app run
 ```
 go run cmd/main.go
