@@ -53,3 +53,16 @@ func GetCases()[]Case{
 	}
 	return cases
 }
+
+func CheckMessagePermissions(userId string,userRole UserType,caseId string) bool {
+	var assigneeId,reporterId string
+	err:=db.QueryRow("SELECT ReporterId,AssigneeId FROM cases WHERE Id=?",caseId).Scan(&reporterId,&assigneeId)
+	if(err!=nil){
+		return false
+	}
+	if userRole==Client{
+		return reporterId == userId
+	}else{
+		return assigneeId == userId
+	}
+}

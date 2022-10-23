@@ -25,6 +25,9 @@ func Routes() *chi.Mux {
 		rx.Get("/",AuthMiddleWare([]string{"admin"},GetAllCases))
 		rx.Post("/{id}/assign",AuthMiddleWare([]string{"admin"},AssignCase))
 	})
+	r.Route("/messages",func(rx chi.Router){
+		rx.Post("/{caseId}",AuthMiddleWare([]string{"client","volunteer"},SendMessage))
+	})
 	r.Get("/my-cases",AuthMiddleWare([]string{"volunteer","client"},GetMyCases))
 	r.Post("/login",AuthUser)
 	r.Post("/test-role-authorization",AuthMiddleWare([]string{"client","admin"},TestAuth))
