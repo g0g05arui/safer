@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	db, _ = sql.Open("mysql", "root:admin@/safer")
+	db, _ = sql.Open("mysql", "root:admin@/safer?parseTime=true")
 	var version string
 	db.QueryRow("SELECT VERSION()").Scan(&version)
 	fmt.Println("Connected to:", version)

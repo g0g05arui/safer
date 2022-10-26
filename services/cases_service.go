@@ -66,3 +66,6 @@ func CheckMessagePermissions(userId string,userRole UserType,caseId string) bool
 		return assigneeId == userId
 	}
 }
+
+
+

@@ -9,5 +9,8 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
+	github.com/pusher/pusher-http-go v4.0.1+incompatible // indirect
+	golang.org/x/crypto v0.1.0 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	gopkg.in/validator.v2 v2.0.1 // indirect
 )
